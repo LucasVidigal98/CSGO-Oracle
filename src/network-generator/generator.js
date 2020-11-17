@@ -1,9 +1,9 @@
 const fs = require('fs');
 const HLTV = require('hltv');
-const { get } = require('http');
-const { parse } = require('path');
+const path = require('path');
+const { stringify } = require('querystring');
 
-async function getResult(teamOne, teamTwo){
+async function getResult(teamOne, teamTwo, nMatches){
     const infoMatches = await HLTV.HLTV.getTeamStats({id: teamOne});
     const links = {}
 
@@ -18,23 +18,17 @@ async function getResult(teamOne, teamTwo){
                 //console.log(infoMatches.matches[i]);
                 parsedResult = infoMatches.matches[i].result.split(' ');
 
-                if (parsedResult[0] < 16){
+                if ((parseInt(parsedResult[0]) - parseInt(parsedResult[2]) < 0)){
                     links[index] = {"loser": teamOne, "winner": teamTwo, "rounds": (parseInt(parsedResult[0]) + parseInt(parsedResult[2]))};
                     loses += 1;
-                }else{
-                    //Verfica se foi para prorrogação e se perdeu a prorrogação
-                    if((parsedResult[0] - parsedResult[2]) < 0){
-                        links[index] = {"loser": teamOne, "winner": teamTwo, "rounds": (parseInt(parsedResult[0]) + parseInt(parsedResult[2]))};
-                        loses += 1;
-                    }
                 }
 
                 index = teamOne + '_' + loses;
                 //links[index] = infoMatches.matches[i];
-                console.log('Encontrado ' + count + ' 10 resultados contra o time de id = ' + teamTwo);
+                console.log('Encontrado ' + count + ' de '+ nMatches +' resultados contra o time de id = ' + teamTwo);
                 console.log('Derrotas encontradas até o momento = ' + loses);
                 count += 1;
-                if(count === 10) break;
+                if(count === parseInt(nMatches)) break;
                 if(i > 1000) break;
             }
         }catch(e){
@@ -44,17 +38,18 @@ async function getResult(teamOne, teamTwo){
     }
 
     //console.log(links);
-    const networkData = fs.readFileSync('./IEM-BEIJING-HAIDIAN-2020-Network.json', 'utf-8');
+    const fileName = './IEM-BEIJING-HAIDIAN-2020-Network-'+ nMatches +'.json';
+    const networkData = fs.readFileSync(fileName, 'utf-8');
     const parsedData = JSON.parse(networkData);
     Object.keys(links).map(l => {
         parsedData['Links'].push(links[l]);
     });
     
     const json = JSON.stringify(parsedData);
-    fs.writeFile('./IEM-BEIJING-HAIDIAN-2020-Network.json', json, 'utf8', (err) => {});
+    fs.writeFile(fileName, json, 'utf8', (err) => {});
 }
 
-function addNodes(nodes){
+function addNodes(nodes, nMatches){
     const jsonNetwork = {};
     jsonNetwork['Nodes'] = [];
     jsonNetwork['Links'] = [];
@@ -63,18 +58,27 @@ function addNodes(nodes){
         jsonNetwork['Nodes'].push(n);
     });
 
+    const fileName = './IEM-BEIJING-HAIDIAN-2020-Network-'+ nMatches +'.json';
     const json = JSON.stringify(jsonNetwork);
-    fs.writeFile('./IEM-BEIJING-HAIDIAN-2020-Network.json', json, 'utf8', (err) => {});
+    fs.writeFile(fileName, json, 'utf8', (err) => {});
 }
 
-async function addLinks(parsedData){
+async function addLinks(parsedData, nMatches){
     for(let i=0; i<parsedData.data.length; i++){
         let = teamOne = parsedData.data[i].id;
         for(let j=0; j<parsedData.data.length; j++){
             let = teamTwo = parsedData.data[j].id;
-            await getResult(teamOne, teamTwo);
+            await getResult(teamOne, teamTwo, nMatches);
         }
     }
+}
+
+
+
+//main
+if(process.argv.length > 4 || process.argv.length < 4){
+    console.log('Estão faltando parâmetros: Arquivo do campeonato ou número de confrontos máximos!');
+    process.exit(1);
 }
 
 const data = fs.readFileSync('./IEM-BEIJING-HAIDIAN-2020.json', 'utf-8');
@@ -87,5 +91,5 @@ parsedData.data.map(data => {nodes.push({
     });
 });
 
-addNodes(nodes);
-addLinks(parsedData);
+addNodes(nodes, parseInt(process.argv[3]));
+addLinks(parsedData, parseInt(process.argv[3]));
