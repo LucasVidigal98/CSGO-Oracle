@@ -1,0 +1,20 @@
+{
+    "data": [
+        { "name": "Heroic", "id": 7175},
+        { "name": "Vitality", "id": 9565},
+        { "name": "Astralis", "id": 6665},
+        { "name": "Natus Vincere", "id": 4608},
+        { "name": "BIG", "id": 7532},
+        { "name": "OG", "id": 10503},
+        { "name": "NiP", "id": 4411},
+        { "name": "FaZe", "id": 6667},
+        { "name": "fnatic", "id": 4991},
+        { "name": "G2", "id": 5995},
+        { "name": "Complexity", "id": 5005},
+        { "name": "mousesports", "id": 4494},
+        { "name": "Spirit", "id": 7020},
+        { "name": "North", "id": 7533},
+        { "name": "ENCE", "id": 4869},
+        { "name": "Mad Lions", "id": 8362}
+    ]
+}
