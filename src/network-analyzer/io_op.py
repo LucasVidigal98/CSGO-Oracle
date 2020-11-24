@@ -1,7 +1,6 @@
 import os
 import json
 
-
 def read_json(file_name):
     sep = os.sep
 
@@ -14,3 +13,5 @@ def read_json(file_name):
         links = data['Links']
 
     return nodes, links
+
+

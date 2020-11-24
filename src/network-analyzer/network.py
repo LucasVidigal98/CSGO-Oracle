@@ -1,15 +1,22 @@
-from graph_tool.all import *
-
+from graph_tool.all import Graph, graph_draw
+from os import sep
 
 class Network:
 
-    def __init__(self, nodes_info, links_info):
+    def __init__(self, nodes_info=None, links_info=None, file_name=None):
         self.g = Graph()
-        self.nodes_info = nodes_info
-        self.links_info = links_info
-        self.nprop_name = self.g.new_vertex_property('string')
-        self.nprop_id = self.g.new_vertex_property('int32_t')
-        self.lprop_weight = self.g.new_edge_property('int32_t')
+
+        if nodes_info and links_info:
+            self.nodes_info = nodes_info
+            self.links_info = links_info
+            self.g.vertex_properties["name"] = self.g.new_vertex_property('string')
+            self.g.vertex_properties["id"] = self.g.new_vertex_property('int32_t')
+            self.g.edge_properties["weight"] = self.g.new_edge_property('int32_t')
+
+            self.create_network()
+
+        elif file_name:
+            self.load_network(file_name)
 
     def create_network(self):
         # Add Nodes
@@ -24,29 +31,36 @@ class Network:
             winner = link['winner']
             weight = link['rounds']
 
-            for team_id in self.nprop_id:
+            for team_id in self.g.vertex_properties.id:
                 if loser == team_id:
                     break
                 n_loser += 1
 
-            for team_id in self.nprop_id:
+            for team_id in self.g.vertex_properties.id:
                 if winner == team_id:
                     break
                 n_winner += 1
 
             self.add_l(n_loser, n_winner, weight)
 
+    def load_network(self, file_name):
+        new_file_name = '..' + sep + '..' + sep + 'network-graphs' + sep + file_name
+        self.g.load(new_file_name, fmt="gt")
+
     def add_n(self, node_info):
         n = self.g.add_vertex()
-        self.nprop_id[n] = node_info['id']
-        self.nprop_name[n] = node_info['Team_Name']
+        self.g.vertex_properties.id[n] = node_info['id']
+        self.g.vertex_properties.name[n] = node_info['Team_Name']
 
     def add_l(self, loser, winner, weight):
         n1 = self.g.vertex(loser)
         n2 = self.g.vertex(winner)
         l = self.g.add_edge(n1, n2)
-        self.lprop_weight[l] = weight
+        self.g.edge_properties.weight[l] = weight
 
     def draw(self):
-        graph_draw(
-            self.g, vertex_text=self.g.vertex_index, output="network.pdf")
+        graph_draw(self.g, vertex_text=self.g.vertex_index, output="network.pdf")
+
+    def save_network(self, file_name):
+        new_file_name = '..' + sep + '..' + sep + 'network-graphs' + sep + file_name
+        self.g.save(new_file_name, fmt="gt")
