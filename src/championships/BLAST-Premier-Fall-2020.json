@@ -1,0 +1,20 @@
+{
+    "data": [
+        {"name": "Heroic", "id": 7175},
+        {"name": "Furia", "id": 8297},
+        {"name": "FaZe", "id": 6667},
+        {"name": "Complexity", "id": 5005},
+        {"name": "NiP", "id": 4411},
+        {"name": "Liquid", "id": 5973},
+        {"name": "Virtus.pro", "id": 5378},
+        {"name": "Spirit", "id": 7020},
+        {"name": "mousesports", "id": 4494},
+        {"name": "Sprout", "id": 8637},
+        {"name": "Mad Lions", "id": 8362},
+        {"name": "GODSENT", "id": 6902},
+        {"name": "MIBR", "id": 9215},
+        {"name": "Endpoint", "id": 7234},
+        {"name": "Isurus", "id": 7653},
+        {"name": "Cloud9", "id": 5752}
+    ]
+}

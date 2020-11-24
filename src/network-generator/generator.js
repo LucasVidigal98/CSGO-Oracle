@@ -38,7 +38,7 @@ async function getResult(teamOne, teamTwo, nMatches){
     }
 
     //console.log(links);
-    const fileName = './IEM-BEIJING-HAIDIAN-2020-Network-'+ nMatches +'.json';
+    const fileName = './BLAST-Premier-Fall-2020-'+ nMatches +'.json';
     const networkData = fs.readFileSync(fileName, 'utf-8');
     const parsedData = JSON.parse(networkData);
     Object.keys(links).map(l => {
@@ -58,7 +58,7 @@ function addNodes(nodes, nMatches){
         jsonNetwork['Nodes'].push(n);
     });
 
-    const fileName = './IEM-BEIJING-HAIDIAN-2020-Network-'+ nMatches +'.json';
+    const fileName = './BLAST-Premier-Fall-2020-'+ nMatches +'.json';
     const json = JSON.stringify(jsonNetwork);
     fs.writeFile(fileName, json, 'utf8', (err) => {});
 }
@@ -81,7 +81,7 @@ if(process.argv.length > 4 || process.argv.length < 4){
     process.exit(1);
 }
 
-const data = fs.readFileSync('./IEM-BEIJING-HAIDIAN-2020.json', 'utf-8');
+const data = fs.readFileSync('./BLAST-Premier-Fall-2020.json', 'utf-8');
 const parsedData = JSON.parse(data);
 
 const nodes = [];
