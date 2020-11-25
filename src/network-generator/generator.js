@@ -1,9 +1,8 @@
 const fs = require('fs');
 const HLTV = require('hltv');
 const path = require('path');
-const { stringify } = require('querystring');
 
-async function getResult(teamOne, teamTwo, nMatches){
+async function getResult(teamOne, teamTwo, file, nMatches){
     const infoMatches = await HLTV.HLTV.getTeamStats({id: teamOne});
     const links = {}
 
@@ -38,18 +37,18 @@ async function getResult(teamOne, teamTwo, nMatches){
     }
 
     //console.log(links);
-    const fileName = './BLAST-Premier-Fall-2020-'+ nMatches +'.json';
-    const networkData = fs.readFileSync(fileName, 'utf-8');
+    const fileName = file + '-' + nMatches +'.json';
+    const networkData = fs.readFileSync(path.resolve(__dirname, '..', '..', 'networks', fileName), 'utf-8');
     const parsedData = JSON.parse(networkData);
     Object.keys(links).map(l => {
         parsedData['Links'].push(links[l]);
     });
     
     const json = JSON.stringify(parsedData);
-    fs.writeFile(fileName, json, 'utf8', (err) => {});
+    fs.writeFile(path.resolve(__dirname, '..', '..', 'networks', fileName), json, 'utf8', (err) => {});
 }
 
-function addNodes(nodes, nMatches){
+function addNodes(nodes, file, nMatches){
     const jsonNetwork = {};
     jsonNetwork['Nodes'] = [];
     jsonNetwork['Links'] = [];
@@ -58,17 +57,17 @@ function addNodes(nodes, nMatches){
         jsonNetwork['Nodes'].push(n);
     });
 
-    const fileName = './BLAST-Premier-Fall-2020-'+ nMatches +'.json';
+    const fileName = file + '-' + nMatches +'.json';
     const json = JSON.stringify(jsonNetwork);
-    fs.writeFile(fileName, json, 'utf8', (err) => {});
+    fs.writeFile(path.resolve(__dirname, '..', '..', 'networks', fileName), json, 'utf8', (err) => {});
 }
 
-async function addLinks(parsedData, nMatches){
+async function addLinks(parsedData, file, nMatches){
     for(let i=0; i<parsedData.data.length; i++){
         let = teamOne = parsedData.data[i].id;
         for(let j=0; j<parsedData.data.length; j++){
             let = teamTwo = parsedData.data[j].id;
-            await getResult(teamOne, teamTwo, nMatches);
+            await getResult(teamOne, teamTwo, file, nMatches);
         }
     }
 }
@@ -81,7 +80,7 @@ if(process.argv.length > 4 || process.argv.length < 4){
     process.exit(1);
 }
 
-const data = fs.readFileSync('./BLAST-Premier-Fall-2020.json', 'utf-8');
+const data = fs.readFileSync(path.resolve(__dirname, '..', 'championships', process.argv[2] + '.json'), 'utf-8');
 const parsedData = JSON.parse(data);
 
 const nodes = [];
@@ -91,5 +90,5 @@ parsedData.data.map(data => {nodes.push({
     });
 });
 
-addNodes(nodes, parseInt(process.argv[3]));
-addLinks(parsedData, parseInt(process.argv[3]));
+addNodes(nodes, process.argv[2], parseInt(process.argv[3]));
+addLinks(parsedData, process.argv[2], parseInt(process.argv[3]));

@@ -2,6 +2,7 @@ from graph_tool.all import Graph, graph_draw
 from graph_tool.centrality import pagerank
 from os import sep
 
+
 class Network:
 
     def __init__(self, nodes_info=None, links_info=None, file_name=None):
@@ -10,12 +11,16 @@ class Network:
         if nodes_info and links_info:
             self.nodes_info = nodes_info
             self.links_info = links_info
-            self.g.vertex_properties["name"] = self.g.new_vertex_property('string')
-            self.g.vertex_properties["id"] = self.g.new_vertex_property('int32_t')
-            self.g.edge_properties["weight"] = self.g.new_edge_property('int32_t')
+            self.g.vertex_properties["name"] = self.g.new_vertex_property(
+                'string')
+            self.g.vertex_properties["id"] = self.g.new_vertex_property(
+                'int32_t')
+            self.g.edge_properties["weight"] = self.g.new_edge_property(
+                'int32_t')
 
             self.create_network()
-            self.g.vertex_properties["pagerank"] = pagerank(self.g, weight=self.g.ep.weight)
+            self.g.vertex_properties["pagerank"] = pagerank(
+                self.g, weight=self.g.ep.weight)
             self.normalize_pagerank()
 
         elif file_name:
@@ -57,7 +62,7 @@ class Network:
                 max_pgr = pgr
 
         for v in self.g.vertices():
-            self.g.vertex_properties.pagerank[v] /= max_pgr        
+            self.g.vertex_properties.pagerank[v] /= max_pgr
 
     def add_n(self, node_info):
         n = self.g.add_vertex()
@@ -71,7 +76,8 @@ class Network:
         self.g.edge_properties.weight[l] = weight
 
     def draw(self):
-        graph_draw(self.g, vertex_text=self.g.vertex_index, output="network.pdf")
+        graph_draw(self.g, vertex_text=self.g.vertex_index,
+                   output="network.pdf")
 
     def save_network(self, file_name):
         new_file_name = '..' + sep + '..' + sep + 'network-graphs' + sep + file_name
