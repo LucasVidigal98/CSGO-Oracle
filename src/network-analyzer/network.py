@@ -15,8 +15,8 @@ class Network:
             self.g.edge_properties["weight"] = self.g.new_edge_property('int32_t')
 
             self.create_network()
-            self.g.vertex_properties["pagerank"] = pagerank(self.g, weight=self.g.ep.weight)
-            self.normalize_pagerank()
+            self.g.vertex_properties["pagerank"] = pagerank(self.g)
+            #self.normalize_pagerank()
 
         elif file_name:
             self.load_network(file_name)
@@ -50,14 +50,13 @@ class Network:
         new_file_name = '..' + sep + '..' + sep + 'network-graphs' + sep + file_name
         self.g.load(new_file_name, fmt="gt")
 
-    def normalize_pagerank(self):
+    def get_normalized_pagerank(self):
         max_pgr = 0
         for pgr in self.g.vertex_properties.pagerank:
             if pgr > max_pgr:
                 max_pgr = pgr
 
-        for v in self.g.vertices():
-            self.g.vertex_properties.pagerank[v] /= max_pgr        
+        return [self.g.vertex_properties.pagerank[v] / max_pgr for v in self.g.vertices()]
 
     def add_n(self, node_info):
         n = self.g.add_vertex()
@@ -68,7 +67,7 @@ class Network:
         n1 = self.g.vertex(loser)
         n2 = self.g.vertex(winner)
         l = self.g.add_edge(n1, n2)
-        self.g.edge_properties.weight[l] = weight
+        self.g.edge_properties.weight[l] = 16 / weight
 
     def draw(self):
         graph_draw(self.g, vertex_text=self.g.vertex_index, output="network.pdf")
