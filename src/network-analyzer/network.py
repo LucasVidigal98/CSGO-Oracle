@@ -10,13 +10,15 @@ class Network:
         if nodes_info and links_info:
             self.nodes_info = nodes_info
             self.links_info = links_info
-            self.g.vertex_properties["name"] = self.g.new_vertex_property('string')
-            self.g.vertex_properties["id"] = self.g.new_vertex_property('int32_t')
-            self.g.edge_properties["weight"] = self.g.new_edge_property('int32_t')
+            self.g.vertex_properties["name"] = self.g.new_vertex_property(
+                'string')
+            self.g.vertex_properties["id"] = self.g.new_vertex_property(
+                'int32_t')
+            self.g.edge_properties["weight"] = self.g.new_edge_property(
+                'int32_t')
 
             self.create_network()
-            self.g.vertex_properties["pagerank"] = pagerank(self.g)
-            #self.normalize_pagerank()
+            self.g.vertex_properties["pagerank"] = pagerank(self.g, weight=self.g.edge_properties["weight"])
 
         elif file_name:
             self.load_network(file_name)
@@ -44,7 +46,7 @@ class Network:
                     break
                 n_winner += 1
 
-            self.add_l(n_loser, n_winner, weight)
+            self.add_l(n_loser, n_winner, 16 / weight * 100)
 
     def load_network(self, file_name):
         new_file_name = '..' + sep + '..' + sep + 'network-graphs' + sep + file_name
@@ -67,14 +69,19 @@ class Network:
         n1 = self.g.vertex(loser)
         n2 = self.g.vertex(winner)
         l = self.g.add_edge(n1, n2)
-        self.g.edge_properties.weight[l] = 16 / weight
+        self.g.edge_properties.weight[l] = weight
 
     def draw(self):
-        graph_draw(self.g, vertex_text=self.g.vertex_index, output="network.pdf")
+        graph_draw(self.g, vertex_text=self.g.vertex_index,
+                   output="network.pdf")
 
     def save_network(self, file_name):
-        new_file_name = '..' + sep + '..' + sep + 'network-graphs' + sep + file_name
-        self.g.save(new_file_name, fmt="gt")
+        try:
+            new_file_name = '..' + sep + '..' + sep + 'network-graphs' + sep + file_name
+            self.g.save(new_file_name, fmt="gt")
+        except:
+            return False
+        return True
 
     def vp_pagerank(self):
         return self.g.vertex_properties.pagerank
