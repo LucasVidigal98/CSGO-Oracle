@@ -15,12 +15,27 @@ n = ''
 if int(option) == 0:
     nodes_info, links_info = read_json(str(file_name))
     n = Network(nodes_info=nodes_info, links_info=links_info)
-    # n.save_network("Test-Network.gt")
-else:
-    n = Network(file_name='..' + sep + '..' + sep +
-                'network-grahps' + sep + file_name)
 
-print("Times com o maior Page Rank:")
-print("\n".join(["\t" + n + ": " + str(pgr)
-                 for n, pgr in p_calc.get_top_rank(n, 5)]))
+    if (n.save_network(file_name.replace("json", "gt"))):
+        print("Rede salva com sucesso!")
+    else:
+        print("Erro ao salvar a rede!")
+
+else:
+    n = Network(file_name=file_name)
+    # n = Network(file_name='..' + sep + '..' + sep + 'network-grahps' + sep + file_name)
+
+print("Rede:", file_name.replace(".json", ""))
+print("Número de times:", n.g.num_vertices(), "\n")
+
+# print("Times com mais chances de ganhar:")
+# print("\n".join(["\t" + n + " - PgR: " + str(v["Page Rank"]) +
+#                 ", Prob.: " + str(v["Probabilidade"])
+#                  for n, v in p_calc.get_top_rank(n)]))
+
+confrontos = [("Furia", "Virtus.pro"), ("MIBR", "Liquid"), ("Heroic", "mousesports"), ("Complexity", "Cloud9")]
+for t1, t2 in confrontos:
+    print("\nProbabilidades de vitória em um confronto entre", t1, "e", t2)
+    print("\n".join(["\t" + n + ": " + "{:.2f}".format(p) + "%"
+                    for n, p in p_calc.get_prob_match(t1, t2, n).items()]))
 # n.draw()

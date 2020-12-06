@@ -2,7 +2,6 @@ from graph_tool.all import Graph, graph_draw
 from graph_tool.centrality import pagerank
 from os import sep
 
-
 class Network:
 
     def __init__(self, nodes_info=None, links_info=None, file_name=None):
@@ -19,9 +18,7 @@ class Network:
                 'int32_t')
 
             self.create_network()
-            self.g.vertex_properties["pagerank"] = pagerank(
-                self.g, weight=self.g.ep.weight)
-            self.normalize_pagerank()
+            self.g.vertex_properties["pagerank"] = pagerank(self.g, weight=self.g.edge_properties["weight"])
 
         elif file_name:
             self.load_network(file_name)
@@ -49,20 +46,19 @@ class Network:
                     break
                 n_winner += 1
 
-            self.add_l(n_loser, n_winner, weight)
+            self.add_l(n_loser, n_winner, 16 / weight * 100)
 
     def load_network(self, file_name):
         new_file_name = '..' + sep + '..' + sep + 'network-graphs' + sep + file_name
         self.g.load(new_file_name, fmt="gt")
 
-    def normalize_pagerank(self):
+    def get_normalized_pagerank(self):
         max_pgr = 0
         for pgr in self.g.vertex_properties.pagerank:
             if pgr > max_pgr:
                 max_pgr = pgr
 
-        for v in self.g.vertices():
-            self.g.vertex_properties.pagerank[v] /= max_pgr
+        return [self.g.vertex_properties.pagerank[v] / max_pgr for v in self.g.vertices()]
 
     def add_n(self, node_info):
         n = self.g.add_vertex()
@@ -80,8 +76,12 @@ class Network:
                    output="network.pdf")
 
     def save_network(self, file_name):
-        new_file_name = '..' + sep + '..' + sep + 'network-graphs' + sep + file_name
-        self.g.save(new_file_name, fmt="gt")
+        try:
+            new_file_name = '..' + sep + '..' + sep + 'network-graphs' + sep + file_name
+            self.g.save(new_file_name, fmt="gt")
+        except:
+            return False
+        return True
 
     def vp_pagerank(self):
         return self.g.vertex_properties.pagerank
