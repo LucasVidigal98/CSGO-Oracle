@@ -28,14 +28,19 @@ else:
 print("Rede:", file_name.replace(".json", ""))
 print("Número de times:", n.g.num_vertices(), "\n")
 
+print("Times com mais chances de ganhar:")
+print("\n".join(["\t" + n + " - Cent.: " + str(v["Centralidade Grau"]) +
+                ", Prob.: " + str(v["Probabilidade"])
+                 for n, v in p_calc.get_top_rank_degree(n, 10)]))
+
 # print("Times com mais chances de ganhar:")
 # print("\n".join(["\t" + n + " - PgR: " + str(v["Page Rank"]) +
 #                 ", Prob.: " + str(v["Probabilidade"])
-#                  for n, v in p_calc.get_top_rank(n)]))
+#                  for n, v in p_calc.get_top_rank_degree(n)]))
 
-confrontos = [("Furia", "Virtus.pro"), ("MIBR", "Liquid"), ("Heroic", "mousesports"), ("Complexity", "Cloud9")]
-for t1, t2 in confrontos:
-    print("\nProbabilidades de vitória em um confronto entre", t1, "e", t2)
-    print("\n".join(["\t" + n + ": " + "{:.2f}".format(p) + "%"
-                    for n, p in p_calc.get_prob_match(t1, t2, n).items()]))
+# confrontos = [("Furia", "Virtus.pro"), ("MIBR", "Liquid"), ("Heroic", "mousesports"), ("Complexity", "Cloud9")]
+# for t1, t2 in confrontos:
+#     print("\nProbabilidades de vitória em um confronto entre", t1, "e", t2)
+#     print("\n".join(["\t" + n + ": " + "{:.2f}".format(p) + "%"
+#                     for n, p in p_calc.get_prob_match(t1, t2, n).items()]))
 # n.draw()
