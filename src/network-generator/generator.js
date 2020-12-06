@@ -61,7 +61,7 @@ async function getAllResults(team, file, nMatches, nodes){
     
     console.log('Buscando informações para o time de id = ' + team);
     
-    for(let i=0; i<infoMatches.matches.length; i++){
+    for(let i=0; i<nMatches; i++){
         try{
             //infoMatches.matches[i].enemyTeam.id
             //console.log(infoMatches.matches[i]);
@@ -72,19 +72,10 @@ async function getAllResults(team, file, nMatches, nodes){
                 let enemy = infoMatches.matches[i].enemyTeam.id;
                 let inNetwork = false;
 
-                parsedData['Links'].map(p=>{
-                    if(p.winner === team && p.loser === enemy){
-                        inNetwork = true;
-                        //break;
-                    }
-                });
-
-                if(inNetwork) continue;
-
                 links[index] = {"loser": team, "winner": enemy, "rounds": (parseInt(parsedResult[0]) + parseInt(parsedResult[2]))};
                 loses += 1;
 
-                inNetwork = true;
+                inNetwork = false;
 
                 nodes.map(n => {
                     if(n.id === enemy){
@@ -93,7 +84,7 @@ async function getAllResults(team, file, nMatches, nodes){
                     }
                 });
     
-                if(inNetwork){
+                if(!inNetwork){
                     let teamName = infoMatches.matches[i].enemyTeam.name
                     nodes.push({
                         "Team_Name": teamName,
@@ -104,19 +95,10 @@ async function getAllResults(team, file, nMatches, nodes){
                 let enemy = infoMatches.matches[i].enemyTeam.id;
                 let inNetwork = false;
 
-                parsedData["Links"].map(p=>{
-                    if(p.winner === enemy && p.loser === team){
-                        inNetwork = true;
-                        //break;
-                    }
-                });
-
-                if(inNetwork) continue;
-
                 links[index] = {"loser": enemy, "winner": team, "rounds": (parseInt(parsedResult[0]) + parseInt(parsedResult[2]))};
                 loses += 1;
 
-                inNetwork = true;
+                inNetwork = false;
 
                 nodes.map(n => {
                     if(n.id === enemy){
@@ -125,7 +107,7 @@ async function getAllResults(team, file, nMatches, nodes){
                     }
                 });
     
-                if(inNetwork){
+                if(!inNetwork){
                     let teamName = infoMatches.matches[i].enemyTeam.name
                     nodes.push({
                         "Team_Name": teamName,
@@ -138,9 +120,6 @@ async function getAllResults(team, file, nMatches, nodes){
             //console.log('Encontrado ' + count + ' de '+ nMatches +' resultados contra o time de id = ' + teamTwo);
             count += 1;
             console.log('Partida(s) encontradas até o momento = ' + count);
-            if(count === parseInt(nMatches)) break;
-            if(i > 1000) break;
-            
         }catch(e){
             console.log('Erro ao encontrar partida: ' + e);
             continue;
