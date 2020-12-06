@@ -1,0 +1,27 @@
+Probabilidades de vitória em um confronto entre FaZe e G2
+        FaZe: 45.49%
+        G2: 54.51%
+
+Probabilidades de vitória em um confronto entre Astralis e Natus Vincere
+        Astralis: 53.90%
+        Natus Vincere: 46.10%
+
+Probabilidades de vitória em um confronto entre Complexity e BIG
+        Complexity: 42.64%
+        BIG: 57.36%
+
+Probabilidades de vitória em um confronto entre Heroic e Vitality
+        Heroic: 46.45%
+        Vitality: 53.55%
+
+Probabilidades de vitória em um confronto entre G2 e Natus Vincere
+        G2: 44.18%
+        Natus Vincere: 55.82%
+
+Probabilidades de vitória em um confronto entre Complexity e Vitality
+        Complexity: 34.62%
+        Vitality: 65.38%
+
+Probabilidades de vitória em um confronto entre Natus Vincere e Vitality
+        Natus Vincere: 41.93%
+        Vitality: 58.07%
